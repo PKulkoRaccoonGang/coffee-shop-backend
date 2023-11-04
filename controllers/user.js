@@ -1,8 +1,12 @@
+/* eslint-disable no-console, no-underscore-dangle */
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const UserModel = require('../models/User');
+
+const SALT_ROUNDS = 10;
+const EXPIRES_IN_DATE = '30d';
 
 const register = async (req, res) => {
   try {
@@ -11,15 +15,18 @@ const register = async (req, res) => {
       return res.status(400).json(errors.array());
     }
 
-    const { password } = req.body;
-    const salt = await bcrypt.genSalt(10);
+    const {
+      password, email, fullName, avatarUrl,
+    } = req.body;
+
+    const salt = await bcrypt.genSalt(SALT_ROUNDS);
     const hash = await bcrypt.hash(password, salt);
 
     const doc = new UserModel({
-      email: req.body.email,
-      fullName: req.body.fullName,
-      password: req.body.password,
-      avatarUrl: req.body.avatarUrl,
+      email,
+      fullName,
+      password,
+      avatarUrl,
       passwordHash: hash,
     });
 
@@ -28,7 +35,7 @@ const register = async (req, res) => {
     const token = jwt.sign({
       _id: user._id,
     }, 'secret', {
-      expiresIn: '30d',
+      expiresIn: EXPIRES_IN_DATE,
     });
 
     const { passwordHash, ...userData } = user._doc;
@@ -37,9 +44,8 @@ const register = async (req, res) => {
       ...userData,
       token,
     });
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log('Error: Failed to registration', err);
+  } catch (error) {
+    console.log('Error: Failed to registration', error);
     return res.status(500).json({
       message: 'Failed to registration',
     });
@@ -76,15 +82,15 @@ const login = async (req, res) => {
       ...userData,
       token,
     });
-  } catch (err) {
-    console.log('Error: Failed to authorization', err);
+  } catch (error) {
+    console.log('Error: Failed to authorization', error);
     return res.status(500).json({
       message: 'Failed to authorization',
     });
   }
 };
 
-const getMe = async (req, res) => {
+const getUserData = async (req, res) => {
   try {
     const user = await UserModel.findById(req.userId);
 
@@ -97,13 +103,12 @@ const getMe = async (req, res) => {
     const { passwordHash, ...userData } = user._doc;
 
     return res.json(userData);
-  } catch (err) {
+  } catch (error) {
+    console.log('Error retrieving user data', error);
     return res.status(500).json({
       message: 'No access',
     });
   }
 };
 
-module.exports = {
-  register, login, getMe,
-};
+module.exports = { register, login, getUserData };

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const { model, Schema } = require('mongoose');
 
 const UserSchema = new Schema({
@@ -14,14 +15,14 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  cart: {
+  basket: {
     items: [{
       count: {
         type: Number,
         required: true,
         default: 1,
       },
-      courseId: {
+      productId: {
         type: Schema.Types.ObjectId,
         ref: 'Product',
         required: true,
@@ -33,40 +34,28 @@ const UserSchema = new Schema({
   timestamps: true,
 });
 
-UserSchema.methods.addToCart = function (course) {
-  const items = [...this.cart.items];
-  const idx = items.findIndex((c) => c.courseId.toString() === course._id.toString());
+UserSchema.methods.addToBasket = function (product) {
+  const items = [...this.basket.items];
+  const productIndex = items
+      .findIndex((currentProduct) => currentProduct.productId.toString() === product._id.toString());
+  const SINGLE_PRODUCT_COUNT = 0;
 
-  if (idx >= 0) {
-    items[idx].count += 1;
+  if (productIndex >= SINGLE_PRODUCT_COUNT) {
+    items[productIndex].count += 1;
   } else {
     items.push({
-      courseId: course._id,
+      productId: product._id,
       count: 1,
     });
   }
 
-  this.cart = { items };
+  this.basket = { items };
 
   return this.save();
 };
 
-UserSchema.methods.removeFromCart = function (id) {
-  let items = [...this.cart.items];
-  const idx = items.findIndex((c) => c.courseId.toString() === id.toString());
-
-  if (items[idx].count === 1) {
-    items = items.filter((c) => c.courseId.toString() !== id.toString());
-  } else {
-    items[idx].count--;
-  }
-
-  this.cart = { items };
-  return this.save();
-};
-
-UserSchema.methods.clearCart = function () {
-  this.cart = { items: [] };
+UserSchema.methods.clearBasket = function () {
+  this.basket = { items: [] };
   return this.save();
 };
 
