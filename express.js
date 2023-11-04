@@ -3,13 +3,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-const { MONGODB_URI, PORT, USER_ID } = require('./constants');
 const User = require('./models/User');
 const {
   productsRoutes, authRoutes, basketRoutes, ordersRoutes,
 } = require('./routes');
+const { MONGODB_URI, USER_ID, BASE_URL } = require('./keys');
 
-mongoose.connect(process.env.MONGODB_URI).then(() => {
+const PORT = process.env.PORT || 4444;
+
+mongoose.connect(MONGODB_URI).then(() => {
   console.log('Mongo DB has been connected');
 }).catch((err) => console.log(err));
 
@@ -32,10 +34,10 @@ app.use(authRoutes);
 app.use(basketRoutes);
 app.use(ordersRoutes);
 
-app.listen(process.env.PORT || 4444, (err) => {
+app.listen(PORT, (err) => {
   if (err) {
     return console.error(err);
   }
 
-  return console.log(`Server listening on port ${PORT}!`);
+  return console.log(`Server listening on port ${PORT}`);
 });
