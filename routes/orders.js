@@ -1,28 +1,36 @@
+/* eslint-disable no-console, no-underscore-dangle */
 const { Router } = require('express');
 
 const Order = require('../models/Order');
 
 const router = Router();
 
+const calculateTotalProductPrice = (order) => {
+  order.products.reduce((total, product) => total + product.count * product.price, 0);
+};
+
 router.get('/orders', async (req, res) => {
   try {
-    const orders = await Order.find({ 'user.userId': req.user._id }).populate('user.userId');
+    const orders = await Order.find({
+      'user.userId': req.user._id,
+    }).populate('user.userId');
+
     res.json({
-      orders: orders.map((o) => ({
-        ...o._doc,
-        price: o.courses.reduce((total, c) => total += c.count * c.price, 0),
+      orders: orders.map((order) => ({
+        ...order._doc,
+        price: () => calculateTotalProductPrice(order),
       })),
     });
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
   }
 });
 
 router.post('/order', async (req, res) => {
   try {
-    const user = await req.user.populate('cart.items.courseId').execPopulate();
-    const courses = user.cart.items.map((i) => ({
-      count: i.count, ...i.courseId._doc,
+    const user = await req.user.populate('basket.items.productId').execPopulate();
+    const products = user.basket.items.map((item) => ({
+      count: item.count, ...item.productId._doc,
     }));
 
     const order = new Order({
@@ -30,14 +38,14 @@ router.post('/order', async (req, res) => {
         name: req.user.fullName,
         userId: req.user,
       },
-      courses,
+      products,
     });
 
     await order.save();
-    await req.user.clearCart();
+    await req.user.clearBasket();
     res.json();
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
   }
 });
 

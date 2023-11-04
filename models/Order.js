@@ -1,7 +1,7 @@
 const { model, Schema } = require('mongoose');
 
 const OrderSchema = new Schema({
-  courses: [
+  products: [
     {
       count: Number,
       type: Object,

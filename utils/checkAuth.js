@@ -1,3 +1,4 @@
+/* eslint-disable no-console, no-underscore-dangle */
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
@@ -8,13 +9,14 @@ module.exports = (req, res, next) => {
       const decoded = jwt.verify(token, 'secret');
       req.userId = decoded._id;
       next();
-    } catch (err) {
-      return res.status(403).json({
+    } catch (error) {
+      console.log(error);
+      res.status(403).json({
         message: 'No access',
       });
     }
   } else {
-    return res.status(403).json({
+    res.status(403).json({
       message: 'No access',
     });
   }
