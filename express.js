@@ -9,7 +9,7 @@ const {
   productsRoutes, authRoutes, basketRoutes, ordersRoutes,
 } = require('./routes');
 
-mongoose.connect(MONGODB_URI).then(() => {
+mongoose.connect(process.env.MONGODB_URI).then(() => {
   console.log('Mongo DB has been connected');
 }).catch((err) => console.log(err));
 
