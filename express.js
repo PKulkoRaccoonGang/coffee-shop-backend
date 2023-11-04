@@ -5,6 +5,9 @@ const cors = require('cors');
 const chalk = require('chalk');
 const helmet = require('helmet');
 const compression = require('compression');
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+const swaggerOptions = require("./swaggerOptions");
 
 const { MONGODB_URI, USER_ID } = require('./keys');
 const User = require('./models/User');
@@ -19,11 +22,13 @@ mongoose.connect(MONGODB_URI).then(() => {
 }).catch((error) => console.log(error));
 
 const app = express();
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(compression());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(async (req, res, next) => {
   try {
