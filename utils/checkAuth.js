@@ -20,6 +20,4 @@ module.exports = (req, res, next) => {
       message: 'No access',
     });
   }
-
-  // res.send(token);
 };

@@ -1,7 +1,15 @@
 /* eslint-disable no-console, no-console */
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const sendgrid = require('nodemailer-sendgrid-transport');
 const jwt = require('jsonwebtoken');
+const keys = require('../keys');
+const regEmail = require('../emails/registration');
+
+const transporter = nodemailer.createTransport(sendgrid({
+  auth: { api_key: keys.SEND_GRID_API_KEY },
+}));
 
 const UserModel = require('../models/User');
 
@@ -39,7 +47,7 @@ const register = async (req, res) => {
     });
 
     const { passwordHash, ...userData } = user._doc;
-
+    await transporter.sendMail(regEmail(email));
     return res.json({
       ...userData,
       token,

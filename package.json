@@ -20,6 +20,8 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.5.3",
+    "nodemailer": "^6.9.7",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "nodemon": "^2.0.22",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0"
