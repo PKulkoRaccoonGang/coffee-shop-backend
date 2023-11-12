@@ -1,6 +1,6 @@
 # Baker 75 Backend API
 This repository contains the backend API for the Baker 75 Street project, built using Node.js and Express.js. 
-It provides endpoints for various functionalities related to the Baker 75 Street React application.
+It provides endpoints for various functionalities related to the [Baker 75 Street React application](https://github.com/PKulkoRaccoonGang/coffee-shop).
 
 # Prerequisites
 Before you begin, ensure you have the following installed:
