@@ -1,4 +1,4 @@
-/* eslint-disable no-console, no-underscore-dangle */
+/* eslint-disable no-console, no-console */
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');

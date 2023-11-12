@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const { model, Schema } = require('mongoose');
 
 const UserSchema = new Schema({
@@ -34,10 +33,11 @@ const UserSchema = new Schema({
   timestamps: true,
 });
 
+/* eslint-disable-next-line func-names */
 UserSchema.methods.addToBasket = function (product) {
   const items = [...this.basket.items];
   const productIndex = items
-      .findIndex((currentProduct) => currentProduct.productId.toString() === product._id.toString());
+    .findIndex((currentProduct) => currentProduct.productId.toString() === product._id.toString());
   const SINGLE_PRODUCT_COUNT = 0;
 
   if (productIndex >= SINGLE_PRODUCT_COUNT) {
@@ -54,6 +54,7 @@ UserSchema.methods.addToBasket = function (product) {
   return this.save();
 };
 
+/* eslint-disable-next-line func-names */
 UserSchema.methods.clearBasket = function () {
   this.basket = { items: [] };
   return this.save();
