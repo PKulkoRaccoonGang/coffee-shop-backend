@@ -10,7 +10,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerOptions = require('./swaggerOptions');
 
 const { MONGODB_URI, USER_ID } = require('./keys');
-const User = require('./models/User');
+const { UserModel } = require('./models');
 const {
   productsRoutes, authRoutes, basketRoutes, ordersRoutes,
 } = require('./routes');
@@ -33,7 +33,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(async (req, res, next) => {
   try {
-    req.user = await User.findById(USER_ID);
+    req.user = await UserModel.findById(USER_ID);
     next();
   } catch (error) {
     console.error(error);

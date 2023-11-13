@@ -1,13 +1,10 @@
 /* eslint-disable no-console */
-const Order = require('../models/Order');
-
-const calculateTotalProductPrice = (order) => {
-  order.products.reduce((total, product) => total + product.count * product.price, 0);
-};
+const { OrderModel } = require('../models');
+const { calculateTotalProductPrice } = require('./utils');
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find({
+    const orders = await OrderModel.find({
       'user.userId': req.user._id,
     }).populate('user.userId');
 
@@ -32,7 +29,7 @@ const getOneOrder = async (req, res) => {
       count: item.count, ...item.productId._doc,
     }));
 
-    const order = new Order({
+    const order = new OrderModel({
       user: {
         name: req.user.fullName,
         userId: req.user,

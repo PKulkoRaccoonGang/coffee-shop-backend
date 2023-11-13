@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const ProductModel = require('../models/Product');
+const { ProductModel } = require('../models');
 
 const getAllProducts = async (req, res) => {
   try {
