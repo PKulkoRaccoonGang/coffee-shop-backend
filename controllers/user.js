@@ -4,8 +4,9 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const sendgrid = require('nodemailer-sendgrid-transport');
 const jwt = require('jsonwebtoken');
-const keys = require('../keys');
+
 const regEmail = require('../emails/registration');
+const keys = require('../keys');
 
 const transporter = nodemailer.createTransport(sendgrid({
   auth: { api_key: keys.SEND_GRID_API_KEY },
@@ -38,6 +39,8 @@ const register = async (req, res) => {
       passwordHash: hash,
     });
 
+    await transporter.sendMail(regEmail(email));
+
     const user = await doc.save();
 
     const token = jwt.sign({
@@ -47,7 +50,6 @@ const register = async (req, res) => {
     });
 
     const { passwordHash, ...userData } = user._doc;
-    await transporter.sendMail(regEmail(email));
     return res.json({
       ...userData,
       token,

@@ -1,8 +1,8 @@
 const { Router } = require('express');
 
-const { UserController } = require('../controllers');
 const { loginValidation, registerValidation } = require('../utils/validations');
 const checkAuth = require('../utils/checkAuth');
+const { UserController } = require('../controllers');
 
 const router = Router();
 
