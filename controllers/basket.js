@@ -1,11 +1,6 @@
 /* eslint-disable no-console */
-const ProductModel = require('../models/Product');
-
-function mapBasketItems(basket) {
-  return basket.items.map((product) => ({
-    ...product.productId._doc, count: product.count,
-  }));
-}
+const { ProductModel } = require('../models');
+const { mapBasketItems } = require('./utils');
 
 const getBasketData = async (req, res) => {
   try {

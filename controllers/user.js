@@ -1,21 +1,12 @@
 /* eslint-disable no-console, no-console */
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
-const sendgrid = require('nodemailer-sendgrid-transport');
 const jwt = require('jsonwebtoken');
 
 const regEmail = require('../emails/registration');
-const keys = require('../keys');
 
-const transporter = nodemailer.createTransport(sendgrid({
-  auth: { api_key: keys.SEND_GRID_API_KEY },
-}));
-
-const UserModel = require('../models/User');
-
-const SALT_ROUNDS = 10;
-const EXPIRES_IN_DATE = '30d';
+const { UserModel } = require('../models');
+const { SALT_ROUNDS, transporter, EXPIRES_IN_DATE } = require('./constants');
 
 const register = async (req, res) => {
   try {
